@@ -1,11 +1,20 @@
 import express from "express"
 import cors from "cors"
 import mongoose from "mongoose"
+import Product from "./models/products.js"
+
+
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200,
+ }
+ 
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded())
-app.use(cors())
+app.use(cors(corsOptions))
 
 mongoose.connect("mongodb+srv://aditi:aditi@myloginregisterdb.iogve.mongodb.net/LoginRegisterDB?retryWrites=true&w=majority", {
     useNewUrlParser: true,
@@ -66,6 +75,54 @@ app.post("/register", (req, res)=> {
     
 }) 
 
-app.listen(9002,() => {
-    console.log("BE started at port 9002")
+app.post("/newproduct", (req, res, next)=>{
+    //const { image, name, quantity, cost, condition, date} = req.body;
+    Product.create(req.body, (error, data)=>{
+        if (error) {
+            return next(error)
+          } else {
+            console.log(data)
+            res.json(data)
+          }
+    })
+})
+
+app.get('/getproducts', async (req,res, next) => {
+    Product.find((error, data) => {
+        if (error) {
+          return next(error)
+        } else {
+          res.json(data)
+        }
+      })
+})
+
+app.delete('/deleteproduct/:id', async(req,res, next)=>{
+    Product.findByIdAndRemove(req.params.id, (error, data)=>{
+        if (error) {
+            return next(error);
+          } else {
+            res.status(200).json({
+              msg: data
+            })
+          }
+    })
+})
+
+app.put('/updateproduct/:id', (req, res, next) => {
+    Product.findByIdAndUpdate(req.params.id, {
+      $set: req.body
+    }, (error, data) => {
+      if (error) {
+        return next(error);
+        console.log(error)
+      } else {
+        res.json(data)
+        console.log('record updated successfully !')
+      }
+    })
+  })
+
+app.listen(5000,() => {
+    console.log("BE started at port 5000")
 })
