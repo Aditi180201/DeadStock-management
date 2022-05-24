@@ -2,6 +2,7 @@ import './App.css'
 import Homepage from "./components/homepage/homepage"
 import Login from "./components/login/login"
 import Register from "./components/register/register"
+import NewProduct from "./pages/newProduct/NewProduct.jsx"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
@@ -32,6 +33,8 @@ function App() {
             <Login updateUser={updateUser}/> 
           </Route>
           <Route path="/register" component={Register}>
+          </Route>
+          <Route path="/newproduct" component={NewProduct}>
           </Route>
           <Route path="/404">
           <h1>404 - Not found</h1>
